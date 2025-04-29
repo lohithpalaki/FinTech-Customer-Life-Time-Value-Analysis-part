@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -6,6 +7,24 @@ import matplotlib.pyplot as plt
 
 # Page settings
 st.set_page_config(page_title="Customer LTV Analysis Dashboard", layout="wide")
+
+# Simple login mechanism
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+    st.title("🔐 Login to LTV Dashboard")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username == "Customer_LTV" and password == "Fintech":
+            st.session_state.logged_in = True
+            st.success("Login successful!")
+            st.experimental_rerun()
+        else:
+            st.error("Invalid credentials.")
+    st.stop()
+
 st.title("📈 Customer Lifetime Value (LTV) Exploratory Analysis Dashboard")
 
 # Load data
@@ -72,8 +91,8 @@ elif page == "Customer Demographics & Behaviour":
         hole=0.4
     )
     fig_pie.update_layout(
-        title_font_size=32,
-        legend_font_size=24
+        title_font_size=24,
+        legend_font_size=20
     )
     fig_pie.update_traces(textfont_size=14)
     st.plotly_chart(fig_pie, use_container_width=True)
@@ -86,16 +105,16 @@ elif page == "Customer Demographics & Behaviour":
         x='Customer_Satisfaction_Score',
         y='count',
         labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'count': 'Customer Count'},
-        title="Customers by Satisfaction Score",
+        title="No of Customers by Customer Satisfaction Score",
         text='count'
     )
     fig_bar.update_traces(textposition='outside', textfont_size=14)
     fig_bar.update_layout(
-        title_font_size=32,
-        xaxis_title_font_size=24,
-        yaxis_title_font_size=24,
-        xaxis_tickfont_size=28,
-        yaxis_tickfont_size=28
+        title_font_size=24,
+        xaxis_title_font_size=20,
+        yaxis_title_font_size=20,
+        xaxis_tickfont_size=18,
+        yaxis_tickfont_size=18
     )
     st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -121,6 +140,13 @@ elif page == "Customer Engagement Analysis":
                        labels={'App_Usage_Frequency': 'App Usage Frequency', 'count': 'Number of Customers'},
                        title="App Usage Frequency by Customers", text='count')
     fig_usage.update_traces(textposition='outside', textfont_size=14)
+    fig_usage.update_layout(
+        title_font_size=24,
+        xaxis_title_font_size=20,
+        yaxis_title_font_size=20,
+        xaxis_tickfont_size=18,
+        yaxis_tickfont_size=18
+    )
     st.plotly_chart(fig_usage, use_container_width=True)
 
     st.subheader("🛠 Support Tickets vs Customer Satisfaction")
@@ -129,4 +155,11 @@ elif page == "Customer Engagement Analysis":
                          labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'Support_Tickets_Raised': 'Support Tickets'},
                          title="Support Tickets Raised by Satisfaction Score", text='Support_Tickets_Raised')
     fig_support.update_traces(textposition='outside', textfont_size=14)
+    fig_support.update_layout(
+        title_font_size=24,
+        xaxis_title_font_size=20,
+        yaxis_title_font_size=20,
+        xaxis_tickfont_size=18,
+        yaxis_tickfont_size=18
+    )
     st.plotly_chart(fig_support, use_container_width=True)
