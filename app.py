@@ -47,7 +47,6 @@ elif page == "Correlation Heatmap":
     ax_corr.set_title("Correlation Matrix of Selected Features")
     st.pyplot(fig_corr)
 
-
 # 3. Customer Demographics & Behaviour
 elif page == "Customer Demographics & Behaviour":
     st.header("👥 Customer Demographics and Behaviour Analysis")
@@ -64,45 +63,41 @@ elif page == "Customer Demographics & Behaviour":
         st.metric("Total Support Tickets", f"{df['Support_Tickets_Raised'].sum():,}")
 
     st.subheader("🗺 Spending Distribution by Location")
-location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
-fig_pie = px.pie(
-    location_spent,
-    names='Location',
-    values='Total_Spent',
-    title="Total Spent Amount by Location",
-    hole=0.4
-)
+    location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
+    fig_pie = px.pie(
+        location_spent,
+        names='Location',
+        values='Total_Spent',
+        title="Total Spent Amount by Location",
+        hole=0.4
+    )
+    fig_pie.update_layout(
+        title_font_size=22,
+        legend_font_size=16
+    )
+    fig_pie.update_traces(textfont_size=14)
+    st.plotly_chart(fig_pie, use_container_width=True)
 
-# Update title and label font sizes
-fig_pie.update_layout(
-    title_font_size=22,
-    legend_font_size=16
-)
-fig_pie.update_traces(textfont_size=14)  # Data labels inside/outside pie
-
-st.plotly_chart(fig_pie, use_container_width=True)
-
-
-st.subheader("📈 Customer Count by Satisfaction Score")
-score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
-score_count.columns = ['Customer_Satisfaction_Score', 'count']
-fig_bar = px.bar(
-    score_count,
-    x='Customer_Satisfaction_Score',
-    y='count',
-    labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'count': 'Customer Count'},
-    title="Customers by Satisfaction Score",
-    text='count'
-)
-fig_bar.update_traces(textposition='outside', textfont_size=14)
-fig_bar.update_layout(
-    title_font_size=22,
-    xaxis_title_font_size=18,
-    yaxis_title_font_size=18,
-    xaxis_tickfont_size=14,
-    yaxis_tickfont_size=14
-)
-st.plotly_chart(fig_bar, use_container_width=True)
+    st.subheader("📈 Customer Count by Satisfaction Score")
+    score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
+    score_count.columns = ['Customer_Satisfaction_Score', 'count']
+    fig_bar = px.bar(
+        score_count,
+        x='Customer_Satisfaction_Score',
+        y='count',
+        labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'count': 'Customer Count'},
+        title="Customers by Satisfaction Score",
+        text='count'
+    )
+    fig_bar.update_traces(textposition='outside', textfont_size=14)
+    fig_bar.update_layout(
+        title_font_size=22,
+        xaxis_title_font_size=18,
+        yaxis_title_font_size=18,
+        xaxis_tickfont_size=14,
+        yaxis_tickfont_size=14
+    )
+    st.plotly_chart(fig_bar, use_container_width=True)
 
 # 4. Customer Engagement Analysis
 elif page == "Customer Engagement Analysis":
@@ -125,7 +120,7 @@ elif page == "Customer Engagement Analysis":
     fig_usage = px.bar(app_usage, x='App_Usage_Frequency', y='count',
                        labels={'App_Usage_Frequency': 'App Usage Frequency', 'count': 'Number of Customers'},
                        title="App Usage Frequency by Customers", text='count')
-    fig_usage.update_traces(textposition='outside')
+    fig_usage.update_traces(textposition='outside', textfont_size=14)
     st.plotly_chart(fig_usage, use_container_width=True)
 
     st.subheader("🛠 Support Tickets vs Customer Satisfaction")
@@ -133,5 +128,5 @@ elif page == "Customer Engagement Analysis":
     fig_support = px.bar(support_satisfaction, x='Customer_Satisfaction_Score', y='Support_Tickets_Raised',
                          labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'Support_Tickets_Raised': 'Support Tickets'},
                          title="Support Tickets Raised by Satisfaction Score", text='Support_Tickets_Raised')
-    fig_support.update_traces(textposition='outside')
+    fig_support.update_traces(textposition='outside', textfont_size=14)
     st.plotly_chart(fig_support, use_container_width=True)
