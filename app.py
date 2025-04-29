@@ -46,9 +46,10 @@ elif page == "Correlation Heatmap":
     ]
     corr = df[selected_cols].corr()
     fig_corr, ax_corr = plt.subplots(figsize=(10, 7))
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax_corr)
+    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax_corr)
     ax_corr.set_title("Correlation Matrix of Selected Features")
     st.pyplot(fig_corr)
+
 
 # 3. Customer Demographics & Behaviour
 elif page == "Customer Demographics & Behaviour":
@@ -65,12 +66,12 @@ elif page == "Customer Demographics & Behaviour":
     with col4:
         st.metric("Total Support Tickets", f"{df['Support_Tickets_Raised'].sum():,}")
 
-    st.subheader("🗺 Spending Distribution by Location")
+     st.subheader("🗺 Spending Distribution by Location")
     location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
     fig_pie = px.pie(location_spent, names='Location', values='Total_Spent',
                      title="Total Spent Amount by Location", hole=0.4)
-    fig_pie.update_traces(textinfo='percent+label+value')
     st.plotly_chart(fig_pie, use_container_width=True)
+
 
     st.subheader("📈 Customer Count by Satisfaction Score")
     score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
@@ -86,7 +87,7 @@ elif page == "Customer Engagement Analysis":
     st.header("📞 Customer Engagement Analysis")
 
     st.subheader("📌 Engagement Metrics")
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Total Transactions", f"{df['Total_Transactions'].sum():,}")
     with col2:
