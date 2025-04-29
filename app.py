@@ -17,7 +17,7 @@ if not st.session_state.logged_in:
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if username == "admin" and password == "1234":
+        if username == "Customer_LTV" and password == "Fintech":
             st.session_state.logged_in = True
             st.success("Login successful!")
             st.experimental_rerun()
@@ -47,11 +47,19 @@ selected_income = st.sidebar.multiselect("Income Level", options=df['Income_Leve
 selected_payment = st.sidebar.multiselect("Preferred Payment Method", options=df['Preferred_Payment_Method'].unique(), default=df['Preferred_Payment_Method'].unique())
 selected_age = st.sidebar.slider("Age", min_value=int(df['Age'].min()), max_value=int(df['Age'].max()), value=(int(df['Age'].min()), int(df['Age'].max())))
 
-filtered_df = df[
-    (df['Location'].isin(selected_location)) &
-    (df['Income_Level'].isin(selected_income)) &
-    (df['Preferred_Payment_Method'].isin(selected_payment)) &
-    (df['Age'] >= selected_age[0]) & (df['Age'] <= selected_age[1])
+filtered_df = df.copy()
+
+if selected_location:
+    filtered_df = filtered_df[filtered_df['Location'].isin(selected_location)]
+
+if selected_income:
+    filtered_df = filtered_df[filtered_df['Income_Level'].isin(selected_income)]
+
+if selected_payment:
+    filtered_df = filtered_df[filtered_df['Preferred_Payment_Method'].isin(selected_payment)]
+
+filtered_df = filtered_df[
+    (filtered_df['Age'] >= selected_age[0]) & (filtered_df['Age'] <= selected_age[1])
 ]
 
 # 1. Boxplot Visualizations
