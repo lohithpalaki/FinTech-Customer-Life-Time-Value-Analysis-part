@@ -32,6 +32,9 @@ if page == "Boxplot Visualizations":
         st.subheader(f"Boxplot for {col}")
         fig, ax = plt.subplots(figsize=(10, 4))
         sns.boxplot(x=df[col], ax=ax)
+        mean_val = df[col].mean()
+        ax.axvline(mean_val, color='red', linestyle='--')
+        ax.text(mean_val, 0, f'Mean: {mean_val:,.2f}', color='red', va='center', ha='left')
         st.pyplot(fig)
 
 # 2. Correlation Heatmap
@@ -43,7 +46,7 @@ elif page == "Correlation Heatmap":
     ]
     corr = df[selected_cols].corr()
     fig_corr, ax_corr = plt.subplots(figsize=(10, 7))
-    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax_corr)
+    sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax_corr)
     ax_corr.set_title("Correlation Matrix of Selected Features")
     st.pyplot(fig_corr)
 
@@ -66,6 +69,7 @@ elif page == "Customer Demographics & Behaviour":
     location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
     fig_pie = px.pie(location_spent, names='Location', values='Total_Spent',
                      title="Total Spent Amount by Location", hole=0.4)
+    fig_pie.update_traces(textinfo='percent+label+value')
     st.plotly_chart(fig_pie, use_container_width=True)
 
     st.subheader("📈 Customer Count by Satisfaction Score")
@@ -73,7 +77,8 @@ elif page == "Customer Demographics & Behaviour":
     score_count.columns = ['Customer_Satisfaction_Score', 'count']
     fig_bar = px.bar(score_count, x='Customer_Satisfaction_Score', y='count',
                      labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'count': 'Customer Count'},
-                     title="Customers by Satisfaction Score")
+                     title="Customers by Satisfaction Score", text='count')
+    fig_bar.update_traces(textposition='outside')
     st.plotly_chart(fig_bar, use_container_width=True)
 
 # 4. Customer Engagement Analysis
@@ -81,7 +86,7 @@ elif page == "Customer Engagement Analysis":
     st.header("📞 Customer Engagement Analysis")
 
     st.subheader("📌 Engagement Metrics")
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2 = st.columns(2)
     with col1:
         st.metric("Total Transactions", f"{df['Total_Transactions'].sum():,}")
     with col2:
@@ -90,19 +95,20 @@ elif page == "Customer Engagement Analysis":
         st.metric("Total Cashback Received", f"₹{df['Cashback_Received'].sum():,.3f}")
     with col4:
         st.metric("Avg Issue Resolution Time (hrs)", f"{df['Issue_Resolution_Time'].mean():.3f}")
-      
 
     st.subheader("📲 App Usage Frequency Distribution")
     app_usage = df['App_Usage_Frequency'].value_counts().reset_index()
     app_usage.columns = ['App_Usage_Frequency', 'count']
     fig_usage = px.bar(app_usage, x='App_Usage_Frequency', y='count',
                        labels={'App_Usage_Frequency': 'App Usage Frequency', 'count': 'Number of Customers'},
-                       title="App Usage Frequency among Customers")
+                       title="App Usage Frequency by Customers", text='count')
+    fig_usage.update_traces(textposition='outside')
     st.plotly_chart(fig_usage, use_container_width=True)
 
     st.subheader("🛠 Support Tickets vs Customer Satisfaction")
     support_satisfaction = df.groupby('Customer_Satisfaction_Score')['Support_Tickets_Raised'].sum().reset_index()
     fig_support = px.bar(support_satisfaction, x='Customer_Satisfaction_Score', y='Support_Tickets_Raised',
                          labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'Support_Tickets_Raised': 'Support Tickets'},
-                         title="Support Tickets Raised by Satisfaction Score")
+                         title="Support Tickets Raised by Satisfaction Score", text='Support_Tickets_Raised')
+    fig_support.update_traces(textposition='outside')
     st.plotly_chart(fig_support, use_container_width=True)
