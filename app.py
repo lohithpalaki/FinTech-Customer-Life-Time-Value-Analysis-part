@@ -66,7 +66,7 @@ elif page == "Customer Demographics & Behaviour":
     with col4:
         st.metric("Total Support Tickets", f"{df['Support_Tickets_Raised'].sum():,}")
 
-      st.subheader("🗺 Spending Distribution by Location")
+    st.subheader("🗺 Spending Distribution by Location")
     location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
     fig_pie = px.pie(location_spent, names='Location', values='Total_Spent',
                      title="Total Spent Amount by Location", hole=0.4)
