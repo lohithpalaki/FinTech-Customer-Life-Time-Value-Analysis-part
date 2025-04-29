@@ -17,7 +17,7 @@ if not st.session_state.logged_in:
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if username == "Customer_LTV" and password == "Fintech":
+        if username == "admin" and password == "1234":
             st.session_state.logged_in = True
             st.success("Login successful!")
             st.experimental_rerun()
@@ -39,6 +39,20 @@ page = st.sidebar.radio("Go to", [
     "Customer Demographics & Behaviour",
     "Customer Engagement Analysis"
 ])
+
+# Filters (applied to specific pages)
+st.sidebar.header("🧰 Apply Filters")
+selected_location = st.sidebar.multiselect("Location", options=df['Location'].unique(), default=df['Location'].unique())
+selected_income = st.sidebar.multiselect("Income Level", options=df['Income_Level'].unique(), default=df['Income_Level'].unique())
+selected_payment = st.sidebar.multiselect("Preferred Payment Method", options=df['Preferred_Payment_Method'].unique(), default=df['Preferred_Payment_Method'].unique())
+selected_age = st.sidebar.slider("Age", min_value=int(df['Age'].min()), max_value=int(df['Age'].max()), value=(int(df['Age'].min()), int(df['Age'].max())))
+
+filtered_df = df[
+    (df['Location'].isin(selected_location)) &
+    (df['Income_Level'].isin(selected_income)) &
+    (df['Preferred_Payment_Method'].isin(selected_payment)) &
+    (df['Age'] >= selected_age[0]) & (df['Age'] <= selected_age[1])
+]
 
 # 1. Boxplot Visualizations
 if page == "Boxplot Visualizations":
@@ -73,16 +87,16 @@ elif page == "Customer Demographics & Behaviour":
     st.subheader("📌 Key Indicators")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Total Customers", f"{df['Customer_ID'].nunique()}")
+        st.metric("Total Customers", f"{filtered_df['Customer_ID'].nunique()}")
     with col2:
-        st.metric("Total Referral Count", f"{df['Referral_Count'].sum():,}")
+        st.metric("Total Referral Count", f"{filtered_df['Referral_Count'].sum():,}")
     with col3:
-        st.metric("Total Loyalty Points", f"{df['Loyalty_Points_Earned'].sum():,}")
+        st.metric("Total Loyalty Points", f"{filtered_df['Loyalty_Points_Earned'].sum():,}")
     with col4:
-        st.metric("Total Support Tickets", f"{df['Support_Tickets_Raised'].sum():,}")
+        st.metric("Total Support Tickets", f"{filtered_df['Support_Tickets_Raised'].sum():,}")
 
     st.subheader("🗺 Spending Distribution by Location")
-    location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
+    location_spent = filtered_df.groupby('Location')['Total_Spent'].sum().reset_index()
     fig_pie = px.pie(
         location_spent,
         names='Location',
@@ -90,15 +104,12 @@ elif page == "Customer Demographics & Behaviour":
         title="Total Spent Amount by Location",
         hole=0.4
     )
-    fig_pie.update_layout(
-        title_font_size=24,
-        legend_font_size=20
-    )
+    fig_pie.update_layout(title_font_size=24, legend_font_size=20)
     fig_pie.update_traces(textfont_size=14)
     st.plotly_chart(fig_pie, use_container_width=True)
 
     st.subheader("📈 Customer Count by Satisfaction Score")
-    score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
+    score_count = filtered_df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
     score_count.columns = ['Customer_Satisfaction_Score', 'count']
     fig_bar = px.bar(
         score_count,
@@ -125,16 +136,16 @@ elif page == "Customer Engagement Analysis":
     st.subheader("📌 Engagement Metrics")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Total Transactions", f"{df['Total_Transactions'].sum():,}")
+        st.metric("Total Transactions", f"{filtered_df['Total_Transactions'].sum():,}")
     with col2:
-        st.metric("Total Spent Amount", f"₹{df['Total_Spent'].sum():,.3f}")
+        st.metric("Total Spent Amount", f"₹{filtered_df['Total_Spent'].sum():,.3f}")
     with col3:
-        st.metric("Total Cashback Received", f"₹{df['Cashback_Received'].sum():,.3f}")
+        st.metric("Total Cashback Received", f"₹{filtered_df['Cashback_Received'].sum():,.3f}")
     with col4:
-        st.metric("Avg Issue Resolution Time (hrs)", f"{df['Issue_Resolution_Time'].mean():.3f}")
+        st.metric("Avg Issue Resolution Time (hrs)", f"{filtered_df['Issue_Resolution_Time'].mean():.3f}")
 
     st.subheader("📲 App Usage Frequency Distribution")
-    app_usage = df['App_Usage_Frequency'].value_counts().reset_index()
+    app_usage = filtered_df['App_Usage_Frequency'].value_counts().reset_index()
     app_usage.columns = ['App_Usage_Frequency', 'count']
     fig_usage = px.bar(app_usage, x='App_Usage_Frequency', y='count',
                        labels={'App_Usage_Frequency': 'App Usage Frequency', 'count': 'Number of Customers'},
@@ -150,7 +161,7 @@ elif page == "Customer Engagement Analysis":
     st.plotly_chart(fig_usage, use_container_width=True)
 
     st.subheader("🛠 Support Tickets vs Customer Satisfaction")
-    support_satisfaction = df.groupby('Customer_Satisfaction_Score')['Support_Tickets_Raised'].sum().reset_index()
+    support_satisfaction = filtered_df.groupby('Customer_Satisfaction_Score')['Support_Tickets_Raised'].sum().reset_index()
     fig_support = px.bar(support_satisfaction, x='Customer_Satisfaction_Score', y='Support_Tickets_Raised',
                          labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'Support_Tickets_Raised': 'Support Tickets'},
                          title="Support Tickets Raised by Satisfaction Score", text='Support_Tickets_Raised')
