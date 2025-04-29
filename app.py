@@ -60,7 +60,7 @@ elif page == "Customer Demographics & Behaviour":
     with col3:
         st.metric("Total Loyalty Points", f"{df['Loyalty_Points_Earned'].sum():,}")
     with col4:
-        st.metric("Total Support Tickets", f"₹{df['Support_Tickets_Raised'].sum():,}")
+        st.metric("Total Support Tickets", f"{df['Support_Tickets_Raised'].sum():,}")
 
     st.subheader("🗺 Spending Distribution by Location")
     location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
@@ -85,7 +85,7 @@ elif page == "Customer Engagement Analysis":
     with col1:
         st.metric("Total Transactions", f"{df['Total_Transactions'].sum():,}")
     with col2:
-        st.metric("Total Spent Amount", f"{df['Total_Spent'].sum():,.3f}")
+        st.metric("Total Spent Amount", f"₹{df['Total_Spent'].sum():,.3f}")
     with col3:
         st.metric("Total Cashback Received", f"₹{df['Cashback_Received'].sum():,.3f}")
     with col4:
