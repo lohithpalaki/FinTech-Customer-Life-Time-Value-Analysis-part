@@ -72,8 +72,8 @@ elif page == "Customer Demographics & Behaviour":
         hole=0.4
     )
     fig_pie.update_layout(
-        title_font_size=22,
-        legend_font_size=16
+        title_font_size=32,
+        legend_font_size=24
     )
     fig_pie.update_traces(textfont_size=14)
     st.plotly_chart(fig_pie, use_container_width=True)
@@ -91,11 +91,11 @@ elif page == "Customer Demographics & Behaviour":
     )
     fig_bar.update_traces(textposition='outside', textfont_size=14)
     fig_bar.update_layout(
-        title_font_size=22,
-        xaxis_title_font_size=18,
-        yaxis_title_font_size=18,
-        xaxis_tickfont_size=14,
-        yaxis_tickfont_size=14
+        title_font_size=32,
+        xaxis_title_font_size=24,
+        yaxis_title_font_size=24,
+        xaxis_tickfont_size=28,
+        yaxis_tickfont_size=28
     )
     st.plotly_chart(fig_bar, use_container_width=True)
 
