@@ -83,7 +83,7 @@ fig_pie.update_traces(textfont_size=14)  # Data labels inside/outside pie
 st.plotly_chart(fig_pie, use_container_width=True)
 
 
-    st.subheader("📈 Customer Count by Satisfaction Score")
+st.subheader("📈 Customer Count by Satisfaction Score")
 score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
 score_count.columns = ['Customer_Satisfaction_Score', 'count']
 fig_bar = px.bar(
