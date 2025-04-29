@@ -20,7 +20,7 @@ if not st.session_state.logged_in:
         if username == "Customer_LTV" and password == "Fintech":
             st.session_state.logged_in = True
             st.success("Login successful!")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Invalid credentials.")
     st.stop()
