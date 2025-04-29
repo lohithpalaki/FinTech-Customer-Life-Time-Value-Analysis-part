@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -29,10 +28,11 @@ if page == "Boxplot Visualizations":
         'Total_Spent', 'Loyalty_Points_Earned', 'Referral_Count',
         'Cashback_Received', 'Customer_Satisfaction_Score', 'LTV'
     ]
-    fig_box, ax_box = plt.subplots(figsize=(12, 6))
-    sns.boxplot(data=df[selected_cols], ax=ax_box)
-    ax_box.set_title("Boxplots of Important Features")
-    st.pyplot(fig_box)
+    for col in selected_cols:
+        st.subheader(f"Boxplot for {col}")
+        fig, ax = plt.subplots(figsize=(10, 4))
+        sns.boxplot(x=df[col], ax=ax)
+        st.pyplot(fig)
 
 # 2. Correlation Heatmap
 elif page == "Correlation Heatmap":
@@ -60,7 +60,7 @@ elif page == "Customer Demographics & Behaviour":
     with col3:
         st.metric("Total Loyalty Points", f"{df['Loyalty_Points_Earned'].sum():,}")
     with col4:
-        st.metric("Total Cashback Received", f"₹{df['Cashback_Received'].sum():,.2f}")
+        st.metric("Total Support Tickets", f"₹{df['Support_Tickets_Raised'].sum():,}")
 
     st.subheader("🗺 Spending Distribution by Location")
     location_spent = df.groupby('Location')['Total_Spent'].sum().reset_index()
@@ -70,8 +70,9 @@ elif page == "Customer Demographics & Behaviour":
 
     st.subheader("📈 Customer Count by Satisfaction Score")
     score_count = df['Customer_Satisfaction_Score'].value_counts().sort_index().reset_index()
-    fig_bar = px.bar(score_count, x='index', y='Customer_Satisfaction_Score',
-                     labels={'index': 'Satisfaction Score', 'Customer_Satisfaction_Score': 'Customer Count'},
+    score_count.columns = ['Customer_Satisfaction_Score', 'count']
+    fig_bar = px.bar(score_count, x='Customer_Satisfaction_Score', y='count',
+                     labels={'Customer_Satisfaction_Score': 'Satisfaction Score', 'count': 'Customer Count'},
                      title="Customers by Satisfaction Score")
     st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -80,16 +81,22 @@ elif page == "Customer Engagement Analysis":
     st.header("📞 Customer Engagement Analysis")
 
     st.subheader("📌 Engagement Metrics")
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Total Transactions", f"{df['Total_Transactions'].sum():,}")
     with col2:
-        st.metric("Avg Issue Resolution Time (hrs)", f"{df['Issue_Resolution_Time'].mean():.2f}")
+        st.metric("Total Spent Amount", f"{df['Total_Spent'].sum():,.3f}")
+    with col3:
+        st.metric("Total Cashback Received", f"₹{df['Cashback_Received'].sum():,.3f}")
+    with col4:
+        st.metric("Avg Issue Resolution Time (hrs)", f"{df['Issue_Resolution_Time'].mean():.3f}")
+      
 
     st.subheader("📲 App Usage Frequency Distribution")
     app_usage = df['App_Usage_Frequency'].value_counts().reset_index()
-    fig_usage = px.bar(app_usage, x='index', y='App_Usage_Frequency',
-                       labels={'index': 'App Usage Frequency', 'App_Usage_Frequency': 'Number of Customers'},
+    app_usage.columns = ['App_Usage_Frequency', 'count']
+    fig_usage = px.bar(app_usage, x='App_Usage_Frequency', y='count',
+                       labels={'App_Usage_Frequency': 'App Usage Frequency', 'count': 'Number of Customers'},
                        title="App Usage Frequency among Customers")
     st.plotly_chart(fig_usage, use_container_width=True)
 
